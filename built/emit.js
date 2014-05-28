@@ -676,7 +676,7 @@ Emit.prototype.Emit = function( element, event, type ) {
     {
         event.stopPropagation();
         event.stopImmediatePropagation();
-        if ( typeof( event.isPropagationStopped ) == 'undefined' )
+        if ( typeof( event.isPropagationStopped ) != 'function' || !event.isPropagationStopped() )
         {
             event.isPropagationStopped = t;
         }

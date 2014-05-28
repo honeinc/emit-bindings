@@ -99,6 +99,7 @@ MIT
 0.0.6
 -----
 * Allow clicks on file inputs
+* Fix an issue with isPropagationStopped
 
 0.0.5
 -----
