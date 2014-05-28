@@ -602,7 +602,7 @@ Emit.prototype.handleEvent = function( event ) {
                             continue;
                         }
                     }
-                    else if ( el.tagName == 'INPUT' && !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' ) )
+                    else if ( el.tagName == 'INPUT' && !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' || el.type == 'file' ) )
                     {
                         if ( event.type != 'input' )
                         {

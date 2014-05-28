@@ -96,6 +96,10 @@ Sometimes you don't want to listen to all the normal events (click, touchend, in
 MIT
 
 # Changelog
+0.0.6
+-----
+* Allow clicks on file inputs
+
 0.0.5
 -----
 * Add event.emitTarget instead of possibly read-only currentTarget
