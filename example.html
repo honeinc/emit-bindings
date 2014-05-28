@@ -19,6 +19,14 @@
         <div style="border: 1px solid black; padding: 30px; text-align: center;" data-emit="">
             <a href="" data-emit='floog'>Emit 'floog' but clicking elsewhere in this div should *not* produce an 'unhandled' event.</a>
         </div>
+        <div style="border: 1px solid black; padding: 30px; text-align: center;">
+            <form data-emit="submitted">
+                <input type="text" data-emit="changed" />
+                <input type="checkbox" data-emit="checked" data-emit-options="allowdefault">This is a checkbox.</input> <!-- allowdefault will let the checkbox check -->
+                <input type="radio" data-emit="selected" data-emit-options="allowdefault">This is a radio button.</input> <!-- allowdefault will let the radio button select -->
+                <input type="submit" value="Submit" data-emit="submit.clicked" data-emit-options="allowdefault" /> <!-- allowdefault will let the form submission event fire -->
+            </form>
+        </div>
         
         <script type="text/javascript">
 
@@ -52,6 +60,26 @@
                 console.log( 'floog' );
             } );
 
+            Emit.on( 'changed', function( event ) {
+                console.log( 'input changed' );
+            } );
+            
+            Emit.on( 'checked', function( event ) {
+                console.log( 'checkbox checked' );
+            } );
+
+            Emit.on( 'selected', function( event ) {
+                console.log( 'radio button selected' );
+            } );
+            
+            Emit.on( 'submit.clicked', function( event ) {
+                console.log( 'submit.clicked' );
+            } );
+
+            Emit.on( 'submitted', function( event ) {
+                console.log( 'form submitted' );
+            } );
+            
             Emit.on( 'unhandled', function( event ) {
                 console.log( 'unhandled' );
             } );

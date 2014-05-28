@@ -15,6 +15,13 @@ Emit events on DOM element interaction using data-emit attributes.
 
 <a data-emit='yak' href="#yak" data-emit-options="allowdefault">Emit 'yak' and allow default navigation to #yak.</a>
 
+<form data-emit="submitted"> <!-- emits 'submitted' on form submit -->
+    <input type="text" data-emit="input.changed" /> <!-- emits 'input.changed' on input -->
+    <input type="checkbox" data-emit="checked" data-emit-options="allowdefault">This is a checkbox.</input> <!-- allowdefault will let the checkbox check -->
+    <input type="radio" data-emit="selected" data-emit-options="allowdefault">This is a radio button.</input> <!-- allowdefault will let the radio button select -->
+    <input type="submit" value="Submit" data-emit="submit.clicked" data-emit-options="allowdefault" /> <!-- allowdefault will let the form submission event fire -->
+</form>
+
 <div style="border: 1px solid black; padding: 30px; text-align: center;" data-emit=""> <!-- catch click/touch event -->
     <a data-emit='floog'>Emit 'floog' but clicking elsewhere in this div should *not* produce an 'unhandled' event.</a>
 </div>
@@ -69,11 +76,27 @@ delay on mobile devices).
 It is similar to Google's [JsAction](https://github.com/google/jsaction), except it is simpler and smaller (but, of
 course, less robust).
 
+# Advanced Usage
+
+## Ignoring events
+
+Sometimes you don't want to listen to all the normal events (click, touchend, input, submit):
+
+```html
+<a data-emit="foo" data-ignore="click">foo</a> <!- will not emit 'foo' when clicked -->
+```
+
+
 # License
 
 MIT
 
 # Changelog
+0.0.3
+-----
+* Add data-emit-ignore support
+* Fix submit/input handling to only emit on appropriate events
+
 0.0.2
 -----
 * Make sure events have a currentTarget that points to the current element

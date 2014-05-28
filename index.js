@@ -68,9 +68,9 @@ Emit.prototype.handleEvent = function( event ) {
             break;
         
         case 'click':
+        case 'touchend':
         case 'input':
         case 'submit':
-        case 'touchend':
             // eat any late-firing click events on touch devices
             if ( event.type == 'click' && self.lastTouchPoint )
             {
@@ -86,16 +86,34 @@ Emit.prototype.handleEvent = function( event ) {
                 }
             }
 
-            var el = closest( event.target || event.srcElement, '[data-emit]', true, document );
+            var selector = '[data-emit]';
+            var el = closest( event.target || event.srcElement, selector, true, document );
             
             if ( el )
             {
                 var depth = 0;
                 while( el && !event.isPropagationStopped() && ++depth < 100 )
                 {
+                    if ( el.tagName == 'FORM' )
+                    {
+                        if ( event.type != 'submit' )
+                        {
+                            el = closest( el, selector, false, document );
+                            continue;
+                        }
+                    }
+                    else if ( el.tagName == 'INPUT' && !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' ) )
+                    {
+                        if ( event.type != 'input' )
+                        {
+                            el = closest( el, selector, false, document );
+                            continue;
+                        }
+                    }
+
                     event.currentTarget = el;
                     self.Emit( el, event );
-                    el = closest( el, '[data-emit]', false, document );
+                    el = closest( el, selector, false, document );
                 }
                 
                 if ( depth >= 100 )
@@ -118,7 +136,20 @@ Emit.prototype.Emit = function( element, event, type ) {
     var self = this;
     var optionString = element.getAttribute( 'data-emit-options' );
     var options = {};
+    var ignoreString = element.getAttribute( 'data-emit-ignore' );
     
+    if ( ignoreString && ignoreString.length )
+    {
+        var ignoredEvents = ignoreString.toLowerCase().split( ' ' );
+        for ( var i = 0; i < ignoredEvents.length; ++i )
+        {
+            if ( event.type == ignoredEvents[ i ] )
+            {
+                return;
+            }
+        }
+    }
+
     if ( optionString && optionString.length )
     {
         var opts = optionString.toLowerCase().split( ' ' );
