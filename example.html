@@ -24,6 +24,10 @@
                 <input type="text" data-emit="changed" />
                 <input type="checkbox" data-emit="checked" data-emit-options="allowdefault">This is a checkbox.</input> <!-- allowdefault will let the checkbox check -->
                 <input type="radio" data-emit="selected" data-emit-options="allowdefault">This is a radio button.</input> <!-- allowdefault will let the radio button select -->
+                <select data-emit="dropdown.selected">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                </select>
                 <input type="submit" value="Submit" data-emit="submit.clicked" data-emit-options="allowdefault" /> <!-- allowdefault will let the form submission event fire -->
             </form>
         </div>
@@ -70,6 +74,10 @@
 
             Emit.on( 'selected', function( event ) {
                 console.log( 'radio button selected' );
+            } );
+            
+            Emit.on( 'dropdown.selected', function( event ) {
+                console.log( 'dropdown changed' );
             } );
             
             Emit.on( 'submit.clicked', function( event ) {

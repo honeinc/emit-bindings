@@ -67,7 +67,7 @@ will accept it.
 
 # Why would I need this?
 
-Emit is a simple, small (~9kb minified, ~3kb minified+gzipped) way to bind javascript actions to DOM nodes without
+Emit is a simple, small (~10kb minified, ~4kb minified+gzipped) way to bind javascript actions to DOM nodes without
 using the more classic selector style favored by jQuery. It allows for better separation of concerns: no longer
 are element classes how you find and bind to actions in your UI. Instead, you mark up your DOM with the events
 you'd like various elements to emit when they are clicked (or touched, Emit also helps eliminate the 300ms click
@@ -92,6 +92,10 @@ Sometimes you don't want to listen to all the normal events (click, touchend, in
 MIT
 
 # Changelog
+0.0.4
+-----
+* Add select element handling
+
 0.0.3
 -----
 * Add data-emit-ignore support

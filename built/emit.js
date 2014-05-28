@@ -610,6 +610,14 @@ Emit.prototype.handleEvent = function( event ) {
                             continue;
                         }
                     }
+                    else if ( el.tagName == 'SELECT' )
+                    {
+                        if ( event.type != 'input' )
+                        {
+                            el = closest( el, selector, false, document );
+                            continue;
+                        }
+                    }
 
                     event.currentTarget = el;
                     self.Emit( el, event );
