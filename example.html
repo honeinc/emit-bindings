@@ -1,0 +1,61 @@
+<!DOCTYPE html> 
+<html> 
+    <head>
+        <script type="text/javascript" src="built/emit.js"></script>
+    </head>
+    <body>
+        <a data-emit='foo' href="">Emit 'foo'</a>
+        <p/>
+        <a data-emit='bar' href="">Emit 'bar'</a>
+        <p/>
+        <div data-emit='baz.wrapper'>
+            <a data-emit='baz' href="" data-emit-options="allowpropagate">Emit 'baz' and 'baz.wrapper'.</a>
+        </div>
+        <p/>
+        <a data-emit='yak' href="#yak" data-emit-options="allowdefault">Emit 'yak' and allow default nav to #yak.</a>
+        <p/>
+        <a data-emit='gloop' href="#gloop">Emit 'gloop' but don't allow navigation to #gloop.</a>
+        <p/>
+        <div style="border: 1px solid black; padding: 30px; text-align: center;" data-emit="">
+            <a href="" data-emit='floog'>Emit 'floog' but clicking elsewhere in this div should *not* produce an 'unhandled' event.</a>
+        </div>
+        
+        <script type="text/javascript">
+
+            /* testing */
+
+            Emit.on( 'foo', function( event ) {
+                console.log( 'foo' );
+            } );
+
+            Emit.on( 'bar', function( event ) {
+                console.log( 'bar' );
+            } );
+
+            Emit.on( 'baz', function( event ) {
+                console.log( 'baz' );
+            } );
+
+            Emit.on( 'baz.wrapper', function( event ) {
+                console.log( 'baz.wrapper' );
+            } );
+            
+            Emit.on( 'yak', function( event ) {
+                console.log( 'yak' );
+            } );
+            
+            Emit.on( 'gloop', function( event ) {
+                console.log( 'gloop' );
+            } );
+
+            Emit.on( 'floog', function( event ) {
+                console.log( 'floog' );
+            } );
+
+            Emit.on( 'unhandled', function( event ) {
+                console.log( 'unhandled' );
+            } );
+          
+        </script>
+    </body>
+</html>
