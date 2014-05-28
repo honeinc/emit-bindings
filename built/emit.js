@@ -502,7 +502,7 @@ var Emitter = require( 'emitter' );
 var bind = require( 'event' ).bind;
 var closest = require( 'closest' );
 
-module.exports = new Emit();
+module.exports = Emit.singleton || ( Emit.singleton = new Emit() );
 
 function Emit( options ) {
     var self = this;
