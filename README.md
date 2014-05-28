@@ -100,6 +100,7 @@ MIT
 -----
 * Allow clicks on file inputs
 * Fix an issue with isPropagationStopped
+* Fix an issue with preventing defaults on bubbled events
 
 0.0.5
 -----

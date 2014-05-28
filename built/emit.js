@@ -591,7 +591,7 @@ Emit.prototype.handleEvent = function( event ) {
             
             if ( el )
             {
-                var depth = 0;
+                var depth = -1;
                 while( el && !event.isPropagationStopped() && ++depth < 100 )
                 {
                     if ( el.tagName == 'FORM' )
@@ -620,7 +620,7 @@ Emit.prototype.handleEvent = function( event ) {
                     }
 
                     event.emitTarget = el;
-                    self.Emit( el, event );
+                    self.Emit( el, event, depth );
                     el = closest( el, selector, false, document );
                 }
                 
@@ -640,7 +640,7 @@ Emit.prototype.handleEvent = function( event ) {
     }
 }
 
-Emit.prototype.Emit = function( element, event, type ) {
+Emit.prototype.Emit = function( element, event, depth ) {
     var self = this;
     var optionString = element.getAttribute( 'data-emit-options' );
     var options = {};
@@ -667,7 +667,7 @@ Emit.prototype.Emit = function( element, event, type ) {
         }
     }
     
-    if ( !options.allowdefault )
+    if ( depth == 0 && !options.allowdefault )
     {
         event.preventDefault();
     }
