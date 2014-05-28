@@ -619,7 +619,7 @@ Emit.prototype.handleEvent = function( event ) {
                         }
                     }
 
-                    event.currentTarget = el;
+                    event.emitTarget = el;
                     self.Emit( el, event );
                     el = closest( el, selector, false, document );
                 }

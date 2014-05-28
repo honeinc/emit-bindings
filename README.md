@@ -37,6 +37,10 @@ emit.on( 'foo', function( event ) {
     // do something fun, like logging to the console
     console.log( 'got a foo event' );
 } );
+
+emit.on( 'input.changed', function( event ) {
+    var target = event.emitTarget; // prefer using event.emitTarget to event.currentTarget unless you're sure you know what's up
+} );
 ```
 
 # Install
@@ -92,6 +96,10 @@ Sometimes you don't want to listen to all the normal events (click, touchend, in
 MIT
 
 # Changelog
+0.0.5
+-----
+* Add event.emitTarget instead of possibly read-only currentTarget
+
 0.0.4
 -----
 * Add select element handling
