@@ -87,7 +87,9 @@ Emit.prototype.handleEvent = function( event ) {
             }
 
             var selector = '[data-emit]';
-            var el = closest( event.target || event.srcElement, selector, true, document );
+            var originalElement = event.target || event.srcElement;
+            var forceAllowDefault = originalElement.tagName == 'INPUT' && ( originalElement.type == 'checkbox' || originalElement.type == 'radio' );
+            var el = closest( originalElement, selector, true, document );
             
             if ( el )
             {
@@ -102,9 +104,9 @@ Emit.prototype.handleEvent = function( event ) {
                             continue;
                         }
                     }
-                    else if ( el.tagName == 'INPUT' && !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' || el.type == 'file' ) )
+                    else if ( el.tagName == 'INPUT' )
                     {
-                        if ( event.type != 'input' )
+                        if ( !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' || el.type == 'file' ) && event.type != 'input' )
                         {
                             el = closest( el, selector, false, document );
                             continue;
@@ -120,7 +122,7 @@ Emit.prototype.handleEvent = function( event ) {
                     }
 
                     event.emitTarget = el;
-                    self.Emit( el, event, depth );
+                    self.Emit( el, event, forceAllowDefault );
                     el = closest( el, selector, false, document );
                 }
                 
@@ -140,7 +142,7 @@ Emit.prototype.handleEvent = function( event ) {
     }
 }
 
-Emit.prototype.Emit = function( element, event, depth ) {
+Emit.prototype.Emit = function( element, event, forceDefault ) {
     var self = this;
     var optionString = element.getAttribute( 'data-emit-options' );
     var options = {};
@@ -167,12 +169,9 @@ Emit.prototype.Emit = function( element, event, depth ) {
         }
     }
     
-    if ( depth == 0 && !options.allowdefault )
+    if ( !forceDefault && !options.allowdefault )
     {
-        if ( !( element.tagName == 'INPUT' && ( element.type == 'checkbox' || element.type == 'radio' ) ) )
-        {
-            event.preventDefault();
-        }
+        event.preventDefault();
     }
     
     if ( !options.allowpropagate )
