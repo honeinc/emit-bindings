@@ -74,6 +74,9 @@ course, less robust).
 MIT
 
 # Changelog
+0.0.2
+-----
+* Make sure events have a currentTarget that points to the current element
 
 0.0.1
 -----

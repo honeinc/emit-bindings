@@ -593,6 +593,7 @@ Emit.prototype.handleEvent = function( event ) {
                 var depth = 0;
                 while( el && !event.isPropagationStopped() && ++depth < 100 )
                 {
+                    event.currentTarget = el;
                     self.Emit( el, event );
                     el = closest( el, '[data-emit]', false, document );
                 }
