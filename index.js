@@ -169,7 +169,10 @@ Emit.prototype.Emit = function( element, event, depth ) {
     
     if ( depth == 0 && !options.allowdefault )
     {
-        event.preventDefault();
+        if ( !( element.tagName == 'INPUT' && ( element.type == 'checkbox' || element.type == 'radio' ) ) )
+        {
+            event.preventDefault();
+        }
     }
     
     if ( !options.allowpropagate )
