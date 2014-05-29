@@ -89,13 +89,56 @@ Sometimes you don't want to listen to all the normal events (click, touchend, in
 ```html
 <a data-emit="foo" data-ignore="click">foo</a> <!- will not emit 'foo' when clicked -->
 ```
+## Validators
 
+You can add/remove 'validators' within Emit that can validate that a given event should fire.
+
+If one of the validators fails on an element, the event will be stopped and eaten at that element.
+
+### Emit.AddValidator
+
+AddValidator will add a validation function to Emit. It takes a single function as an argument.
+
+The validation function will be called back when Emit is handling an event. The function's this
+context will be set to Emit and it will received two arguments: the element being processed and
+the event:
+
+```javasscript
+
+// add a validator to stop clicks on elements that have the data-busy attribute
+Emit.AddValidator( function( element, event ) {
+    return !$( element ).data( 'busy' );
+} );
+
+```
+
+### Emit.RemoveValidator
+
+RemoveValidator will remove the given validation function from Emit's list of validators. It takes
+a single argument: the function to remove.
+
+```javascript
+function BusyCheck( element, event ) {
+    return !$( element ).data( 'busy' );
+}
+
+Emit.AddValidator( BusyCheck );
+
+Emit.RemoveValidator( BusyCheck );
+```
+
+
+```
 
 # License
 
 MIT
 
 # Changelog
+0.0.7
+-----
+* Add ability to add/remove validators
+
 0.0.6
 -----
 * Allow clicks on file inputs

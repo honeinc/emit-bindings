@@ -200,43 +200,6 @@ require.relative = function(parent) {
 
   return localRequire;
 };
-require.register("component-event/index.js", function(exports, require, module){
-var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
-    unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
-    prefix = bind !== 'addEventListener' ? 'on' : '';
-
-/**
- * Bind `el` event `type` to `fn`.
- *
- * @param {Element} el
- * @param {String} type
- * @param {Function} fn
- * @param {Boolean} capture
- * @return {Function}
- * @api public
- */
-
-exports.bind = function(el, type, fn, capture){
-  el[bind](prefix + type, fn, capture || false);
-  return fn;
-};
-
-/**
- * Unbind `el` event `type`'s callback `fn`.
- *
- * @param {Element} el
- * @param {String} type
- * @param {Function} fn
- * @param {Boolean} capture
- * @return {Function}
- * @api public
- */
-
-exports.unbind = function(el, type, fn, capture){
-  el[unbind](prefix + type, fn, capture || false);
-  return fn;
-};
-});
 require.register("component-query/index.js", function(exports, require, module){
 function one(selector, el) {
   return el.querySelector(selector);
@@ -497,6 +460,43 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 });
+require.register("component-event/index.js", function(exports, require, module){
+var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
+    unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
+    prefix = bind !== 'addEventListener' ? 'on' : '';
+
+/**
+ * Bind `el` event `type` to `fn`.
+ *
+ * @param {Element} el
+ * @param {String} type
+ * @param {Function} fn
+ * @param {Boolean} capture
+ * @return {Function}
+ * @api public
+ */
+
+exports.bind = function(el, type, fn, capture){
+  el[bind](prefix + type, fn, capture || false);
+  return fn;
+};
+
+/**
+ * Unbind `el` event `type`'s callback `fn`.
+ *
+ * @param {Element} el
+ * @param {String} type
+ * @param {Function} fn
+ * @param {Boolean} capture
+ * @return {Function}
+ * @api public
+ */
+
+exports.unbind = function(el, type, fn, capture){
+  el[unbind](prefix + type, fn, capture || false);
+  return fn;
+};
+});
 require.register("emit/index.js", function(exports, require, module){
 var Emitter = require( 'emitter' );
 var bind = require( 'event' ).bind;
@@ -508,6 +508,7 @@ function Emit( options ) {
     var self = this;
     Emitter( self );
     
+    self.validators = [];
     self.touchMoveDelta = 10;
     self.initialTouchPoint = null;
 
@@ -596,6 +597,37 @@ Emit.prototype.handleEvent = function( event ) {
                 var depth = -1;
                 while( el && !event.isPropagationStopped() && ++depth < 100 )
                 {
+                    var validated = true;
+                    for ( var validatorIndex = 0; validatorIndex < self.validators.length; ++validatorIndex )
+                    {
+                        if ( !self.validators[ validatorIndex ].call( this, el, event ) )
+                        {
+                            validated = false;
+                            break;
+                        }
+                    }
+                    
+                    // eat the event if a validator failed
+                    if ( !validated )
+                    {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+                        if ( typeof( event.isPropagationStopped ) != 'function' || !event.isPropagationStopped() )
+                        {
+                            event.isPropagationStopped = t;
+                        }
+
+                        el = null;
+                        continue;
+                    }
+                    
+                    if ( typeof( self.validate ) == 'function' && !self.validate.call( self, el ) )
+                    {
+                        el = closest( el, selector, false, document );
+                        continue;
+                    }
+                    
                     if ( el.tagName == 'FORM' )
                     {
                         if ( event.type != 'submit' )
@@ -694,15 +726,50 @@ Emit.prototype.Emit = function( element, event, forceDefault ) {
     self.emit( emission, event );
 }
 
+Emit.prototype.AddValidator = function( validator ) {
+    var self = this;
+    
+    var found = false;
+    for ( var i = 0; i < self.validators.length; ++i )
+    {
+        if ( self.validators[ i ] == validator )
+        {
+            found = true;
+            break;
+        }
+    }
+    
+    if ( found )
+    {
+        return false;
+    }
+    
+    self.validators.push( validator );
+    return true;
+}
+
+Emit.prototype.RemoveValidator = function( validator ) {
+    var self = this;
+    
+    var found = false;
+    for ( var i = 0; i < self.validators.length; ++i )
+    {
+        if ( self.validators[ i ] == validator )
+        {
+            self.validators.splice( i, 1 );
+            found = true;
+            break;
+        }
+    }
+    
+    return found;
+}
 });
 
 
 
 
 
-
-require.alias("component-event/index.js", "emit/deps/event/index.js");
-require.alias("component-event/index.js", "event/index.js");
 
 require.alias("discore-closest/index.js", "emit/deps/closest/index.js");
 require.alias("discore-closest/index.js", "emit/deps/closest/index.js");
@@ -713,6 +780,9 @@ require.alias("component-query/index.js", "component-matches-selector/deps/query
 require.alias("discore-closest/index.js", "discore-closest/index.js");
 require.alias("component-emitter/index.js", "emit/deps/emitter/index.js");
 require.alias("component-emitter/index.js", "emitter/index.js");
+
+require.alias("component-event/index.js", "emit/deps/event/index.js");
+require.alias("component-event/index.js", "event/index.js");
 if (typeof exports == "object") {
   module.exports = require("emit");
 } else if (typeof define == "function" && define.amd) {

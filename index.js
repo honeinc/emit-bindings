@@ -8,6 +8,7 @@ function Emit( options ) {
     var self = this;
     Emitter( self );
     
+    self.validators = [];
     self.touchMoveDelta = 10;
     self.initialTouchPoint = null;
 
@@ -96,6 +97,37 @@ Emit.prototype.handleEvent = function( event ) {
                 var depth = -1;
                 while( el && !event.isPropagationStopped() && ++depth < 100 )
                 {
+                    var validated = true;
+                    for ( var validatorIndex = 0; validatorIndex < self.validators.length; ++validatorIndex )
+                    {
+                        if ( !self.validators[ validatorIndex ].call( this, el, event ) )
+                        {
+                            validated = false;
+                            break;
+                        }
+                    }
+                    
+                    // eat the event if a validator failed
+                    if ( !validated )
+                    {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+                        if ( typeof( event.isPropagationStopped ) != 'function' || !event.isPropagationStopped() )
+                        {
+                            event.isPropagationStopped = t;
+                        }
+
+                        el = null;
+                        continue;
+                    }
+                    
+                    if ( typeof( self.validate ) == 'function' && !self.validate.call( self, el ) )
+                    {
+                        el = closest( el, selector, false, document );
+                        continue;
+                    }
+                    
                     if ( el.tagName == 'FORM' )
                     {
                         if ( event.type != 'submit' )
@@ -192,4 +224,43 @@ Emit.prototype.Emit = function( element, event, forceDefault ) {
     }
 
     self.emit( emission, event );
+}
+
+Emit.prototype.AddValidator = function( validator ) {
+    var self = this;
+    
+    var found = false;
+    for ( var i = 0; i < self.validators.length; ++i )
+    {
+        if ( self.validators[ i ] == validator )
+        {
+            found = true;
+            break;
+        }
+    }
+    
+    if ( found )
+    {
+        return false;
+    }
+    
+    self.validators.push( validator );
+    return true;
+}
+
+Emit.prototype.RemoveValidator = function( validator ) {
+    var self = this;
+    
+    var found = false;
+    for ( var i = 0; i < self.validators.length; ++i )
+    {
+        if ( self.validators[ i ] == validator )
+        {
+            self.validators.splice( i, 1 );
+            found = true;
+            break;
+        }
+    }
+    
+    return found;
 }
