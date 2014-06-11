@@ -216,14 +216,17 @@ Emit.prototype.Emit = function( element, event, forceDefault ) {
         }
     }
 
-    var emission = element.getAttribute( 'data-emit' );
-    if ( !emission )
+    var emissionList = element.getAttribute( 'data-emit' );
+    if ( !emissionList )
     {
         // allow for empty behaviors that catch events
         return;
     }
 
-    self.emit( emission, event );
+    var emissions = emissionList.split( ',' );
+    emissions.forEach( function( emission ) {
+        self.emit( emission, event );
+    } );
 }
 
 Emit.prototype.AddValidator = function( validator ) {

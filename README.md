@@ -15,6 +15,8 @@ Emit events on DOM element interaction using data-emit attributes.
 
 <a data-emit='yak' href="#yak" data-emit-options="allowdefault">Emit 'yak' and allow default navigation to #yak.</a>
 
+<a data-emit='yak,foo,bar' href="#">Emit 'yak', 'foo' and 'bar' events.</a>
+
 <form data-emit="submitted"> <!-- emits 'submitted' on form submit -->
     <input type="text" data-emit="input.changed" /> <!-- emits 'input.changed' on input -->
     <input type="checkbox" data-emit="checked" data-emit-options="allowdefault">This is a checkbox.</input> <!-- allowdefault will let the checkbox check -->
@@ -135,6 +137,10 @@ Emit.RemoveValidator( BusyCheck );
 MIT
 
 # Changelog
+0.0.8
+-----
+* Allow for emitting multiple comma-separated events
+
 0.0.7
 -----
 * Add ability to add/remove validators
