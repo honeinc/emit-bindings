@@ -137,6 +137,11 @@ Emit.RemoveValidator( BusyCheck );
 MIT
 
 # Changelog
+0.0.9
+-----
+* Fix scrolling triggering events
+* jshint/beautify
+
 0.0.8
 -----
 * Allow for emitting multiple comma-separated events
