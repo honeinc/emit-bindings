@@ -17,14 +17,27 @@ Emit events on DOM element interaction using data-emit attributes.
 
 <a data-emit='yak,foo,bar' href="#">Emit 'yak', 'foo' and 'bar' events.</a>
 
-<form data-emit="submitted"> <!-- emits 'submitted' on form submit -->
-    <input type="text" data-emit="input.changed" /> <!-- emits 'input.changed' on input -->
-    <input type="checkbox" data-emit="checked" data-emit-options="allowdefault">This is a checkbox.</input> <!-- allowdefault will let the checkbox check -->
-    <input type="radio" data-emit="selected" data-emit-options="allowdefault">This is a radio button.</input> <!-- allowdefault will let the radio button select -->
-    <input type="submit" value="Submit" data-emit="submit.clicked" data-emit-options="allowdefault" /> <!-- allowdefault will let the form submission event fire -->
+<!-- emits 'submitted' on form submit -->
+<form data-emit="submitted">
+
+    <!-- emits 'input.changed' on input -->
+    <input type="text" data-emit="input.changed" />
+    
+    <!-- debounce emits, only emitting after 250ms have passed since last input -->
+    <input type="text" data-emit="debounced.changed" data-emit-options="debounce" />
+    
+    <!-- allowdefault will let the checkbox check -->    
+    <input type="checkbox" data-emit="checked" data-emit-options="allowdefault">This is a checkbox.</input>
+    
+    <!-- allowdefault will let the radio button select -->
+    <input type="radio" data-emit="selected" data-emit-options="allowdefault">This is a radio button.</input>
+    
+    <!-- allowdefault will let the form submission event fire -->
+    <input type="submit" value="Submit" data-emit="submit.clicked" data-emit-options="allowdefault" />
 </form>
 
-<div style="border: 1px solid black; padding: 30px; text-align: center;" data-emit=""> <!-- catch click/touch event -->
+<!-- catch click/touch event -->
+<div style="border: 1px solid black; padding: 30px; text-align: center;" data-emit="">
     <a data-emit='floog'>Emit 'floog' but clicking elsewhere in this div should *not* produce an 'unhandled' event.</a>
 </div>
 
@@ -137,6 +150,10 @@ Emit.RemoveValidator( BusyCheck );
 MIT
 
 # Changelog
+0.0.10
+------
+* Add a 'debounce' option
+
 0.0.9
 -----
 * Fix scrolling triggering events

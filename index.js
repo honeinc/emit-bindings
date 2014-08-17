@@ -1,4 +1,4 @@
-/* globals require, module, document, console */
+/* globals require, module, document, console, clearTimeout, setTimeout */
 /* jshint -W097 */
 'use strict';
 
@@ -207,6 +207,28 @@ Emit.prototype.Emit = function( element, event, forceDefault ) {
     }
 
     var emissions = emissionList.split( ',' );
+    if ( options.debounce ) {
+        self.timeouts = self.timeouts || {};
+        if ( self.timeouts[ element ] ) {
+            clearTimeout( self.timeouts[ element ] );
+        }
+        
+        (function() {
+            var _element = element;
+            var _emissions = emissions;
+            var _event = event;
+            self.timeouts[ element ] = setTimeout( function() {
+                _emissions.forEach( function( emission ) {
+                    self.emit( emission, _event );
+                } );
+                clearTimeout( self.timeouts[ _element ] );
+                self.timeouts[ _element ] = null;
+            }, 250 );
+        } )();
+
+        return;
+    }
+    
     emissions.forEach( function( emission ) {
         self.emit( emission, event );
     } );
