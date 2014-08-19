@@ -150,6 +150,10 @@ Emit.RemoveValidator( BusyCheck );
 MIT
 
 # Changelog
+0.0.11
+------
+* Allow inputs on A tags through unless the A tag has a data-emit attribute
+
 0.0.10
 ------
 * Add a 'debounce' option

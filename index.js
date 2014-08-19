@@ -95,6 +95,12 @@ Emit.prototype.handleEvent = function( event ) {
 
             var selector = '[data-emit]';
             var originalElement = event.target || event.srcElement;
+            
+            // if it's a link and it has no emit attribute, allow the event to pass
+            if ( originalElement.tagName === 'A' && !originalElement.getAttribute( 'data-emit' ) ) {
+                return;
+            }
+            
             var forceAllowDefault = originalElement.tagName == 'INPUT' && ( originalElement.type == 'checkbox' || originalElement.type == 'radio' );
             var el = closest( originalElement, selector, true, document );
 
