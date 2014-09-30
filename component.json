@@ -1,6 +1,6 @@
 {
   "name": "emit",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "repo": "honeinc/emit",
   "author": {
     "name": "Andy Burke",
@@ -20,7 +20,7 @@
     "index.js"
   ],
   "dependencies": {
-    "discore/closest": "0.1.2",
+    "component/closest": "0.1.4",
     "component/emitter": "1.1.2",
     "component/event": "0.1.4"
   }  
