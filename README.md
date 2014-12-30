@@ -83,7 +83,7 @@ allow the event to continue propagating.
 Sometimes you don't want to listen to all the normal events (click, touchend, input, submit):
 
 ```html
-<a data-emit="foo" data-ignore="click">foo</a> <!- will not emit 'foo' when clicked -->
+<a data-emit="foo" data-emit-ignore="click">foo</a> <!- will not emit 'foo' when clicked -->
 ```
 ## Validators
 
