@@ -1,0 +1,70 @@
+<html>
+  <body>
+    <script type="text/javascript" src="../build/emit-1.0.0.js"></script>
+    <script type="text/javascript">
+      var emit = require( 'emit' );
+      
+      emit.on( 'unhandled', console.log.bind( console, 'unhandled' ) );
+      emit.on( 'foo', console.log.bind( console, 'foo' ) );
+      emit.on( 'bar', console.log.bind( console, 'bar' ) );
+      emit.on( 'baz.wrapper', console.log.bind( console, 'baz.wrapper' ) );
+      emit.on( 'baz', console.log.bind( console, 'baz' ) );
+      emit.on( 'yak', console.log.bind( console, 'yak' ) );
+      emit.on( 'submitted', console.log.bind( console, 'submitted' ) );
+      emit.on( 'input.changed', console.log.bind( console, 'input.changed' ) );
+      emit.on( 'debounced.changed', console.log.bind( console, 'debounced.changed' ) );
+      emit.on( 'checked', console.log.bind( console, 'checked' ) );
+      emit.on( 'selected', console.log.bind( console, 'selected' ) );
+      emit.on( 'submit.clicked', console.log.bind( console, 'submit.clicked' ) );
+      emit.on( 'floog', console.log.bind( console, 'floog' ) );
+    </script>
+    <a href="" data-emit='foo'>Emit 'foo'</a>
+    
+    <hr>
+    
+    <a href="" data-emit='bar'>Emit 'bar'</a>
+
+    <hr>
+
+    <div data-emit='baz.wrapper'>
+      <a href="" data-emit='baz' data-emit-options="allowpropagate">Emit 'baz' and, due to propagation, 'baz.wrapper'.</a>
+    </div>
+
+    <hr>
+
+    <a data-emit='yak' href="#yak" data-emit-options="allowdefault">Emit 'yak' and allow default navigation to #yak.</a>
+
+    <hr>
+
+    <a href="" data-emit='yak,foo,bar'>Emit 'yak', 'foo' and 'bar' events.</a>
+
+    <hr>
+
+    <!-- emits 'submitted' on form submit -->
+    <form data-emit="submitted">
+
+      <!-- emits 'input.changed' on input -->
+      <input type="text" data-emit="input.changed" />
+
+      <!-- debounce emits, only emitting after 250ms have passed since last input -->
+      <input type="text" data-emit="debounced.changed" data-emit-options="debounce" />
+
+      <!-- allowdefault will let the checkbox check -->    
+      <input type="checkbox" data-emit="checked" data-emit-options="allowdefault">This is a checkbox.</input>
+
+      <!-- allowdefault will let the radio button select -->
+      <input type="radio" data-emit="selected" data-emit-options="allowdefault">This is a radio button.</input>
+
+      <!-- allowdefault will let the form submission event fire -->
+      <input type="submit" value="Submit" data-emit="submit.clicked" data-emit-options="allowdefault" />
+    </form>
+
+    <hr>
+
+    <!-- catch click/touch event -->
+    <div style="border: 1px solid black; padding: 30px; text-align: center;" data-emit="">
+      <a data-emit='floog'>Emit 'floog' but clicking elsewhere in this div should *not* produce an 'unhandled' event.</a>
+    </div>
+    
+  </body>
+</html>

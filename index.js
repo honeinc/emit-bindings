@@ -1,37 +1,90 @@
-/* globals require, module, document, console, clearTimeout, setTimeout */
-/* jshint -W097 */
 'use strict';
 
-var Emitter = require( 'emitter' );
-var bind = require( 'event' ).bind;
-var closest = require( 'closest' );
+var EventEmitter2 = require( 'eventemitter2' ).EventEmitter2;
 
-module.exports = Emit.singleton || ( Emit.singleton = new Emit() );
+/*
+    dependencies
+*/
 
-function Emit( options ) {
+/* binding */
+var bindingMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
+var eventPrefix = bindingMethod !== 'addEventListener' ? 'on' : '';
+
+function bind( el, type, fn, capture ) {
+    el[ bindingMethod ]( eventPrefix + type, fn, capture || false );
+    return fn;
+}
+
+/* matching */
+var vendorMatch = Element.prototype.matches || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.msMatchesSelector || Element.prototype.oMatchesSelector;
+
+function matches( el, selector ) {
+    if ( !el || el.nodeType !== 1 ) {
+        return false;
+    }
+    if ( vendorMatch ) {
+        return vendorMatch.call( el, selector );
+    }
+    var nodes = document.querySelectorAll( selector, el.parentNode );
+    for ( var i = 0; i < nodes.length; ++i ) {
+        if ( nodes[ i ] == el ) {
+            return true;  
+        } 
+    }
+    return false;
+}
+
+/* closest */
+
+function closest( element, selector, checkSelf, root ) {
+    element = checkSelf ? {parentNode: element} : element;
+
+    root = root || document;
+
+    /* Make sure `element !== document` and `element != null`
+       otherwise we get an illegal invocation */
+    while ( ( element = element.parentNode ) && element !== document ) {
+        if ( matches( element, selector ) ) {
+            return element;
+        }
+
+        /* After `matches` on the edge case that
+           the selector matches the root
+           (when the root is not the document) */
+        if (element === root) {
+            return;
+        }
+    }
+}
+
+/*
+    end dependencies
+*/
+
+function Emit() {
     var self = this;
-    /* jshint -W064 */
-    Emitter( self );
-    /* jshint +W064 */
+    EventEmitter2.call( self );
 
     self.validators = [];
     self.touchMoveDelta = 10;
     self.initialTouchPoint = null;
 
-    bind( document, 'touchstart', self );
-    bind( document, 'touchmove', self );
-    bind( document, 'touchend', self );
-    bind( document, 'click', self );
-    bind( document, 'input', self );
-    bind( document, 'submit', self );
+    bind( document, 'touchstart', self.handleEvent.bind( self ) );
+    bind( document, 'touchmove', self.handleEvent.bind( self ) );
+    bind( document, 'touchend', self.handleEvent.bind( self ) );
+    bind( document, 'click', self.handleEvent.bind( self ) );
+    bind( document, 'input', self.handleEvent.bind( self ) );
+    bind( document, 'submit', self.handleEvent.bind( self ) );
 }
 
-var t = function() {
+Emit.prototype = Object.create( EventEmitter2.prototype );
+
+function t() {
     return true;
-};
-var f = function() {
+}
+function f() {
     return false;
-};
+}
 
 function getTouchDelta( event, initial ) {
     var deltaX = ( event.touches[ 0 ].pageX - initial.x );
@@ -153,7 +206,7 @@ Emit.prototype.handleEvent = function( event ) {
                     }
 
                     event.emitTarget = el;
-                    self.Emit( el, event, forceAllowDefault );
+                    self._emit( el, event, forceAllowDefault );
                     el = closest( el, selector, false, document );
                 }
 
@@ -171,7 +224,7 @@ Emit.prototype.handleEvent = function( event ) {
     }
 };
 
-Emit.prototype.Emit = function( element, event, forceDefault ) {
+Emit.prototype._emit = function( element, event, forceDefault ) {
     var self = this;
     var optionString = element.getAttribute( 'data-emit-options' );
     var options = {};
@@ -240,7 +293,7 @@ Emit.prototype.Emit = function( element, event, forceDefault ) {
     } );
 };
 
-Emit.prototype.AddValidator = function( validator ) {
+Emit.prototype.addValidator = function( validator ) {
     var self = this;
 
     var found = false;
@@ -259,7 +312,7 @@ Emit.prototype.AddValidator = function( validator ) {
     return true;
 };
 
-Emit.prototype.RemoveValidator = function( validator ) {
+Emit.prototype.removeValidator = function( validator ) {
     var self = this;
 
     var found = false;
@@ -273,3 +326,8 @@ Emit.prototype.RemoveValidator = function( validator ) {
 
     return found;
 };
+
+Emit.singleton = Emit.singleton || new Emit();
+Emit.singleton.Emit = Emit;
+
+module.exports = Emit.singleton;
