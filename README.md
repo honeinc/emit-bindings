@@ -8,7 +8,7 @@ Emit events on DOM element interaction using data-emit attributes.
 npm install --save honeinc/emit
 ```
 
-To include a prebuilt version directly in your page, use build/emit-<version>.js or build/emit-<version>.min.js:
+To include a prebuilt version directly in your page, use build/emit-(version).js or build/emit-(version).min.js:
 
 ```
 <script type="text/javascript" src="emit-1.0.0.min.js"></script>
