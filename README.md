@@ -40,6 +40,44 @@ course, less robust).
 
 # Advanced Usage
 
+## Options
+
+### debounce
+
+Will debounce this event, only firing 250ms after the user has stopped interacting with the element. This is
+great for text input fields where you don't want to fire after each keystroke, but once the user has paused
+in their typing.
+
+```
+<input type="text" data-emit="changed" data-emit-options="debounce" />
+```
+
+### allowdefault
+
+Allows the default action. By default, emit will prevent the default action. By adding this option, the
+default will happen as well. This can be useful for navigation links where you want the browser to
+navigate, but you also want to be able to listen for an event.
+
+```
+<a href="/foo" data-emit='foo' data-emit-options="allowdefault">Emit 'foo', also navigate to /foo</a>
+```
+
+It's also usually necessary on something like a checkbox, where you want the box to be checked when
+the user clicks it.
+
+```
+<input type="checkbox" data-emit="checked" data-emit-options="allowdefault">Emit 'checked' but also check the checkbox.</input>
+```
+
+### allowpropagate
+
+Allows propagation. By default, emit will stop the propagation of an event. Setting this option will
+allow the event to continue propagating.
+
+```
+<button data-emit="clicked" data-emit-options="allowpropagate">Emit 'clicked' but don't stop event propagation.</button>
+```
+
 ## Ignoring events
 
 Sometimes you don't want to listen to all the normal events (click, touchend, input, submit):
