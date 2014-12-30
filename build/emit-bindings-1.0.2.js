@@ -573,7 +573,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   }
 }();
 
-},{}],"emit":[function(require,module,exports){
+},{}],"emit-bindings":[function(require,module,exports){
 'use strict';
 
 var EventEmitter2 = require( 'eventemitter2' ).EventEmitter2;

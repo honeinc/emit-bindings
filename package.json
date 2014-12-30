@@ -1,9 +1,9 @@
 {
-  "name": "emit",
-  "version": "1.0.1",
+  "name": "emit-bindings",
+  "version": "1.0.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/honeinc/emit.git"
+    "url": "https://github.com/honeinc/emit-bindings.git"
   },
   "author": {
     "name": "Andy Burke",
@@ -11,7 +11,7 @@
     "url": "http://github.com/andyburke"
   },
   "company": "Hone Inc (http://gohone.com)",
-  "homepage": "https://github.com/honeinc/emit",
+  "homepage": "https://github.com/honeinc/emit-bindings",
   "description": "Emit events on DOM element interaction using data-emit attributes.",
   "keywords": [
     "event",

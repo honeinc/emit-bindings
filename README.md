@@ -14,7 +14,7 @@ To include a prebuilt version directly in your page, use build/emit-(version).js
 <script type="text/javascript" src="emit-1.0.0.min.js"></script>
 
 <script>
-var emit = require( 'emit' );
+var emit = require( 'emit-bindings' );
 
 emit.on( 'foo', function( event ) {
     console.log( 'got a foo event' );
