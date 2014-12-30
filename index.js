@@ -150,7 +150,7 @@ Emit.prototype.handleEvent = function( event ) {
             var originalElement = event.target || event.srcElement;
             
             // if it's a link and it has no emit attribute, allow the event to pass
-            if ( originalElement.tagName === 'A' && !originalElement.getAttribute( 'data-emit' ) ) {
+            if ( !originalElement.getAttribute( 'data-emit' ) && ( originalElement.tagName === 'A' || originalElement.tagName === 'BUTTON' || originalElement.tagName === 'INPUT' ) ) {
                 return;
             }
             
