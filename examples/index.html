@@ -2,7 +2,7 @@
   <body>
     <script type="text/javascript" src="../build/emit-bindings-1.0.2.js"></script>
     <script type="text/javascript">
-      var emit = require( 'emit' );
+      var emit = require( 'emit-bindings' );
       
       emit.on( 'unhandled', console.log.bind( console, 'unhandled' ) );
       emit.on( 'foo', console.log.bind( console, 'foo' ) );
