@@ -92,7 +92,7 @@ Emit.prototype.handleEvent = function( event ) {
     var delta = -1;
 
     if ( typeof event.propagationStoppedAt !== 'number' || isNaN( event.propagationStoppedAt ) ) {
-        event.propagationStoppedAt = 100; // lower then possible lowest value 
+        event.propagationStoppedAt = 100; // highest possible value
     }
 
     switch ( event.type ) {
