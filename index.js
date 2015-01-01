@@ -79,13 +79,6 @@ function Emit() {
 
 Emit.prototype = Object.create( EventEmitter2.prototype );
 
-function t() {
-    return true;
-}
-function f() {
-    return false;
-}
-
 function getTouchDelta( event, initial ) {
     var deltaX = ( event.touches[ 0 ].pageX - initial.x );
     var deltaY = ( event.touches[ 0 ].pageY - initial.y );
@@ -95,12 +88,13 @@ function getTouchDelta( event, initial ) {
 Emit.prototype.handleEvent = function( event ) {
     var self = this;
 
-    if ( typeof( event.isPropagationStopped ) == 'undefined' ) {
-        event.isPropagationStopped = f;
-    }
-
     var touches = event.touches;
     var delta = -1;
+
+    if ( typeof event.propagationStoppedAt !== 'number' || isNaN( event.propagationStoppedAt ) ) {
+        event.propagationStoppedAt = 100; // highest possible value
+    }
+
     switch ( event.type ) {
         case 'touchstart':
             self.initialTouchPoint = self.lastTouchPoint = {
@@ -159,7 +153,7 @@ Emit.prototype.handleEvent = function( event ) {
 
             if ( el ) {
                 var depth = -1;
-                while ( el && !event.isPropagationStopped() && ++depth < 100 ) {
+                while ( el && event.propagationStoppedAt > depth && ++depth < 100 ) {
                     var validated = true;
                     for ( var validatorIndex = 0; validatorIndex < self.validators.length; ++validatorIndex ) {
                         if ( !self.validators[ validatorIndex ].call( this, el, event ) ) {
@@ -172,11 +166,7 @@ Emit.prototype.handleEvent = function( event ) {
                     if ( !validated ) {
                         event.preventDefault();
                         event.stopPropagation();
-                        event.stopImmediatePropagation();
-                        if ( typeof( event.isPropagationStopped ) != 'function' || !event.isPropagationStopped() ) {
-                            event.isPropagationStopped = t;
-                        }
-
+                        event.propagationStoppedAt = depth;
                         el = null;
                         continue;
                     }
@@ -206,6 +196,7 @@ Emit.prototype.handleEvent = function( event ) {
                     }
 
                     event.emitTarget = el;
+                    event.depth = depth;
                     self._emit( el, event, forceAllowDefault );
                     el = closest( el, selector, false, document );
                 }
@@ -253,10 +244,7 @@ Emit.prototype._emit = function( element, event, forceDefault ) {
 
     if ( !options.allowpropagate ) {
         event.stopPropagation();
-        event.stopImmediatePropagation();
-        if ( typeof( event.isPropagationStopped ) != 'function' || !event.isPropagationStopped() ) {
-            event.isPropagationStopped = t;
-        }
+        event.propagationStoppedAt = event.depth;
     }
 
     var emissionList = element.getAttribute( 'data-emit' );
