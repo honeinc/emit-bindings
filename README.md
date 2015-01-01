@@ -128,6 +128,10 @@ Emit.removeValidator( busyCheck );
 MIT
 
 # Changelog
+1.1.0
+------
+* Handle event propagation differently to better allow for multiple instances of emit.
+
 1.0.0
 ------
 * Switch to browserify.
