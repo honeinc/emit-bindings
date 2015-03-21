@@ -5,7 +5,7 @@ Emit events on DOM element interaction using data-emit attributes.
 # Install
 
 ```
-npm install --save honeinc/emit
+npm install --save honeinc/emit-bindings
 ```
 
 To include a prebuilt version directly in your page, use build/emit-(version).js or build/emit-(version).min.js:
