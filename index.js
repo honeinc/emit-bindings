@@ -140,73 +140,71 @@ Emit.prototype.handleEvent = function( event ) {
                 return;
             }
 
-            var selector = '[data-emit]';
+            var selector = 'a,button,input,[data-emit]';
             var originalElement = event.target || event.srcElement;
+            var el = originalElement;
             
-            // if it's a link and it has no emit attribute, allow the event to pass
-            if ( !originalElement.getAttribute( 'data-emit' ) && ( originalElement.tagName === 'A' || originalElement.tagName === 'BUTTON' || originalElement.tagName === 'INPUT' ) ) {
-                return;
-            }
-            
-            var forceAllowDefault = originalElement.tagName == 'INPUT' && ( originalElement.type == 'checkbox' || originalElement.type == 'radio' );
-            var el = closest( originalElement, selector, true, document );
+            var depth = -1;
+            while( el && event.propagationStoppedAt > depth && ++depth < 100 ) {
+                // if it's a link, button or input and it has no emit attribute, allow the event to pass
+                if ( !el.getAttribute( 'data-emit' ) && ( el.tagName === 'A' || el.tagName === 'BUTTON' || el.tagName === 'INPUT' ) ) {
+                    return;
+                }
 
-            if ( el ) {
-                var depth = -1;
-                while ( el && event.propagationStoppedAt > depth && ++depth < 100 ) {
-                    var validated = true;
-                    for ( var validatorIndex = 0; validatorIndex < self.validators.length; ++validatorIndex ) {
-                        if ( !self.validators[ validatorIndex ].call( this, el, event ) ) {
-                            validated = false;
-                            break;
-                        }
+                var forceAllowDefault = el.tagName == 'INPUT' && ( el.type == 'checkbox' || el.type == 'radio' );
+
+                var validated = true;
+                for ( var validatorIndex = 0; validatorIndex < self.validators.length; ++validatorIndex ) {
+                    if ( !self.validators[ validatorIndex ].call( this, el, event ) ) {
+                        validated = false;
+                        break;
                     }
+                }
 
-                    // eat the event if a validator failed
-                    if ( !validated ) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        event.propagationStoppedAt = depth;
-                        el = null;
-                        continue;
-                    }
+                // eat the event if a validator failed
+                if ( !validated ) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.propagationStoppedAt = depth;
+                    el = null;
+                    continue;
+                }
+                
+                if ( typeof( self.validate ) == 'function' && !self.validate.call( self, el ) ) {
+                    el = closest( el, selector, false, document );
+                    continue;
+                }
 
-                    if ( typeof( self.validate ) == 'function' && !self.validate.call( self, el ) ) {
+                if ( el.tagName == 'FORM' ) {
+                    if ( event.type != 'submit' ) {
                         el = closest( el, selector, false, document );
                         continue;
                     }
-
-                    if ( el.tagName == 'FORM' ) {
-                        if ( event.type != 'submit' ) {
-                            el = closest( el, selector, false, document );
-                            continue;
-                        }
+                }
+                else if ( el.tagName == 'INPUT' ) {
+                    if ( !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' || el.type == 'file' ) && event.type != 'input' ) {
+                        el = closest( el, selector, false, document );
+                        continue;
                     }
-                    else if ( el.tagName == 'INPUT' ) {
-                        if ( !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' || el.type == 'file' ) && event.type != 'input' ) {
-                            el = closest( el, selector, false, document );
-                            continue;
-                        }
+                }
+                else if ( el.tagName == 'SELECT' ) {
+                    if ( event.type != 'input' ) {
+                        el = closest( el, selector, false, document );
+                        continue;
                     }
-                    else if ( el.tagName == 'SELECT' ) {
-                        if ( event.type != 'input' ) {
-                            el = closest( el, selector, false, document );
-                            continue;
-                        }
-                    }
-
-                    event.emitTarget = el;
-                    event.depth = depth;
-                    self._emit( el, event, forceAllowDefault );
-                    el = closest( el, selector, false, document );
                 }
 
-                if ( depth >= 100 ) {
-                    throw new Error( 'Exceeded depth limit for Emit calls.' );
-                }
+                event.emitTarget = el;
+                event.depth = depth;
+                self._emit( el, event, forceAllowDefault );
+                el = closest( el, selector, false, document );
             }
-            else {
+            
+            if ( !el && !event.propagationStoppedAt ) {
                 self.emit( 'unhandled', event );
+            }
+            else if ( depth >= 100 ) {
+                throw new Error( 'Exceeded depth limit for Emit calls.' );
             }
 
             self.initialTouchPoint = null;

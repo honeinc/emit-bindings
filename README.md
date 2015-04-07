@@ -11,7 +11,7 @@ npm install --save honeinc/emit-bindings
 To include a prebuilt version directly in your page, use build/emit-(version).js or build/emit-(version).min.js:
 
 ```
-<script type="text/javascript" src="emit-1.0.0.min.js"></script>
+<script type="text/javascript" src="emit-1.0.3.min.js"></script>
 
 <script>
 var emit = require( 'emit-bindings' );
@@ -128,6 +128,10 @@ Emit.removeValidator( busyCheck );
 MIT
 
 # Changelog
+1.1.1
+-----
+* Handle hitting basic types (a, input, button) even when they have an element inside them.
+
 1.1.0
 ------
 * Handle event propagation differently to better allow for multiple instances of emit.

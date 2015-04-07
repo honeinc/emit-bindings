@@ -1,6 +1,6 @@
 <html>
   <body>
-    <script type="text/javascript" src="../build/emit-bindings-1.0.2.js"></script>
+    <script type="text/javascript" src="../build/emit-bindings-1.1.1.js"></script>
     <script type="text/javascript">
       var emit = require( 'emit-bindings' );
       
@@ -17,6 +17,7 @@
       emit.on( 'selected', console.log.bind( console, 'selected' ) );
       emit.on( 'submit.clicked', console.log.bind( console, 'submit.clicked' ) );
       emit.on( 'floog', console.log.bind( console, 'floog' ) );
+      emit.on( 'should.not.be.emitted', console.log.bind( console, 'should.not.be.emitted', 'oops!' ) );
     </script>
     <a href="" data-emit='foo'>Emit 'foo'</a>
     
@@ -66,5 +67,12 @@
       <a data-emit='floog'>Emit 'floog' but clicking elsewhere in this div should *not* produce an 'unhandled' event.</a>
     </div>
     
+    <!-- let the a tag handle the event, even with a div inside it. -->
+    <div style="border: 1px solid black; padding: 30px; text-align: center;" data-emit="">
+      <div data-emit="should.not.be.emitted">
+        <a href="#alinkhandled"><div style="width: 100px; height: 100px; background: blue; color: white; font-weight: bold;">Test an anchor tag with a div inside it.</div></a>
+      </div>
+    </div>
+
   </body>
 </html>
