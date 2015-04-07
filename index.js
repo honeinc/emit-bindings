@@ -145,10 +145,20 @@ Emit.prototype.handleEvent = function( event ) {
             var el = originalElement;
             
             var depth = -1;
+            var handled = false;
             while( el && event.propagationStoppedAt > depth && ++depth < 100 ) {
-                // if it's a link, button or input and it has no emit attribute, allow the event to pass
-                if ( !el.getAttribute( 'data-emit' ) && ( el.tagName === 'A' || el.tagName === 'BUTTON' || el.tagName === 'INPUT' ) ) {
-                    return;
+                event.emitTarget = el;
+                event.depth = depth;
+                
+                if ( !el.hasAttribute( 'data-emit' ) ) {
+                    // if it's a link, button or input and it has no emit attribute, allow the event to pass
+                    if ( el.tagName === 'A' || el.tagName === 'BUTTON' || el.tagName === 'INPUT' ) {
+                        return;
+                    }
+                    else {
+                        el = closest( el, selector, false, document );
+                        continue;
+                    }
                 }
 
                 var forceAllowDefault = el.tagName == 'INPUT' && ( el.type == 'checkbox' || el.type == 'radio' );
@@ -194,13 +204,11 @@ Emit.prototype.handleEvent = function( event ) {
                     }
                 }
 
-                event.emitTarget = el;
-                event.depth = depth;
-                self._emit( el, event, forceAllowDefault );
+                handled |= self._emit( el, event, forceAllowDefault );
                 el = closest( el, selector, false, document );
             }
             
-            if ( !el && !event.propagationStoppedAt ) {
+            if ( !handled ) {
                 self.emit( 'unhandled', event );
             }
             else if ( depth >= 100 ) {
@@ -215,6 +223,7 @@ Emit.prototype.handleEvent = function( event ) {
 
 Emit.prototype._emit = function( element, event, forceDefault ) {
     var self = this;
+
     var optionString = element.getAttribute( 'data-emit-options' );
     var options = {};
     var ignoreString = element.getAttribute( 'data-emit-ignore' );
@@ -224,7 +233,7 @@ Emit.prototype._emit = function( element, event, forceDefault ) {
         var ignoredEvents = ignoreString.toLowerCase().split( ' ' );
         for ( i = 0; i < ignoredEvents.length; ++i ) {
             if ( event.type == ignoredEvents[ i ] ) {
-                return;
+                return false;
             }
         }
     }
@@ -248,7 +257,7 @@ Emit.prototype._emit = function( element, event, forceDefault ) {
     var emissionList = element.getAttribute( 'data-emit' );
     if ( !emissionList ) {
         // allow for empty behaviors that catch events
-        return;
+        return true;
     }
 
     var emissions = emissionList.split( ',' );
@@ -271,12 +280,14 @@ Emit.prototype._emit = function( element, event, forceDefault ) {
             }, 250 );
         } )();
 
-        return;
+        return true;
     }
     
     emissions.forEach( function( emission ) {
         self.emit( emission, event );
     } );
+    
+    return true;
 };
 
 Emit.prototype.addValidator = function( validator ) {
