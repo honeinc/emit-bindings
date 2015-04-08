@@ -11,7 +11,7 @@ npm install --save honeinc/emit-bindings
 To include a prebuilt version directly in your page, use build/emit-(version).js or build/emit-(version).min.js:
 
 ```
-<script type="text/javascript" src="emit-1.0.3.min.js"></script>
+<script type="text/javascript" src="emit-1.1.2.min.js"></script>
 
 <script>
 var emit = require( 'emit-bindings' );

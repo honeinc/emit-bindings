@@ -27,7 +27,7 @@ function matches( el, selector ) {
     }
     var nodes = document.querySelectorAll( selector, el.parentNode );
     for ( var i = 0; i < nodes.length; ++i ) {
-        if ( nodes[ i ] == el ) {
+        if ( nodes[ i ] === el ) {
             return true;  
         } 
     }
@@ -161,7 +161,7 @@ Emit.prototype.handleEvent = function( event ) {
                     }
                 }
 
-                var forceAllowDefault = el.tagName == 'INPUT' && ( el.type == 'checkbox' || el.type == 'radio' );
+                var forceAllowDefault = el.tagName === 'INPUT' && ( el.type === 'checkbox' || el.type === 'radio' );
 
                 var validated = true;
                 for ( var validatorIndex = 0; validatorIndex < self.validators.length; ++validatorIndex ) {
@@ -180,25 +180,25 @@ Emit.prototype.handleEvent = function( event ) {
                     continue;
                 }
                 
-                if ( typeof( self.validate ) == 'function' && !self.validate.call( self, el ) ) {
+                if ( typeof( self.validate ) === 'function' && !self.validate.call( self, el ) ) {
                     el = closest( el, selector, false, document );
                     continue;
                 }
 
-                if ( el.tagName == 'FORM' ) {
-                    if ( event.type != 'submit' ) {
+                if ( el.tagName === 'FORM' ) {
+                    if ( event.type !== 'submit' ) {
                         el = closest( el, selector, false, document );
                         continue;
                     }
                 }
-                else if ( el.tagName == 'INPUT' ) {
-                    if ( !( el.type == 'submit' || el.type == 'checkbox' || el.type == 'radio' || el.type == 'file' ) && event.type != 'input' ) {
+                else if ( el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ) {
+                    if ( !( el.type === 'submit' || el.type === 'checkbox' || el.type === 'radio' || el.type === 'file' ) && event.type !== 'input' ) {
                         el = closest( el, selector, false, document );
                         continue;
                     }
                 }
-                else if ( el.tagName == 'SELECT' ) {
-                    if ( event.type != 'input' ) {
+                else if ( el.tagName === 'SELECT' ) {
+                    if ( event.type !== 'input' ) {
                         el = closest( el, selector, false, document );
                         continue;
                     }
@@ -232,7 +232,7 @@ Emit.prototype._emit = function( element, event, forceDefault ) {
     if ( ignoreString && ignoreString.length ) {
         var ignoredEvents = ignoreString.toLowerCase().split( ' ' );
         for ( i = 0; i < ignoredEvents.length; ++i ) {
-            if ( event.type == ignoredEvents[ i ] ) {
+            if ( event.type === ignoredEvents[ i ] ) {
                 return false;
             }
         }
@@ -295,7 +295,7 @@ Emit.prototype.addValidator = function( validator ) {
 
     var found = false;
     for ( var i = 0; i < self.validators.length; ++i ) {
-        if ( self.validators[ i ] == validator ) {
+        if ( self.validators[ i ] === validator ) {
             found = true;
             break;
         }
@@ -314,7 +314,7 @@ Emit.prototype.removeValidator = function( validator ) {
 
     var found = false;
     for ( var i = 0; i < self.validators.length; ++i ) {
-        if ( self.validators[ i ] == validator ) {
+        if ( self.validators[ i ] === validator ) {
             self.validators.splice( i, 1 );
             found = true;
             break;
