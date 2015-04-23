@@ -4,13 +4,13 @@ Emit events on DOM element interaction using data-emit attributes.
 
 # Install
 
-```
+```bash
 npm install --save honeinc/emit-bindings
 ```
 
 To include a prebuilt version directly in your page, use build/emit-(version).js or build/emit-(version).min.js:
 
-```
+```html
 <script type="text/javascript" src="emit-1.1.2.min.js"></script>
 
 <script>
@@ -48,7 +48,7 @@ Will debounce this event, only firing 250ms after the user has stopped interacti
 great for text input fields where you don't want to fire after each keystroke, but once the user has paused
 in their typing.
 
-```
+```html
 <input type="text" data-emit="changed" data-emit-options="debounce" />
 ```
 
@@ -58,14 +58,14 @@ Allows the default action. By default, emit will prevent the default action. By 
 default will happen as well. This can be useful for navigation links where you want the browser to
 navigate, but you also want to be able to listen for an event.
 
-```
+```html
 <a href="/foo" data-emit='foo' data-emit-options="allowdefault">Emit 'foo', also navigate to /foo</a>
 ```
 
 It's also usually necessary on something like a checkbox, where you want the box to be checked when
 the user clicks it.
 
-```
+```html
 <input type="checkbox" data-emit="checked" data-emit-options="allowdefault">Emit 'checked' but also check the checkbox.</input>
 ```
 
@@ -74,7 +74,7 @@ the user clicks it.
 Allows propagation. By default, emit will stop the propagation of an event. Setting this option will
 allow the event to continue propagating.
 
-```
+```html
 <button data-emit="clicked" data-emit-options="allowpropagate">Emit 'clicked' but don't stop event propagation.</button>
 ```
 
@@ -85,6 +85,7 @@ Sometimes you don't want to listen to all the normal events (click, touchend, in
 ```html
 <a data-emit="foo" data-emit-ignore="click">foo</a> <!- will not emit 'foo' when clicked -->
 ```
+
 ## Validators
 
 You can add/remove 'validators' within Emit that can validate that a given event should fire.
@@ -99,13 +100,12 @@ The validation function will be called back when Emit is handling an event. The 
 context will be set to Emit and it will received two arguments: the element being processed and
 the event:
 
-```javasscript
-
+```javascript
 // add a validator to stop clicks on elements that have the data-busy attribute
+
 emit.addValidator( function( element, event ) {
     return !$( element ).data( 'busy' );
 } );
-
 ```
 
 ### Emit.removeValidator
